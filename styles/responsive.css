@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
   body {
-    padding: 8px;
+    padding: 6px;
     overflow-x: hidden;
   }
 
@@ -8,7 +8,7 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    gap: 8px;
+    gap: 6px;
   }
 
   .poker-app,
@@ -17,40 +17,40 @@
   }
 
   .poker-app {
-    padding: 12px;
-    gap: 8px;
+    padding: 10px;
+    gap: 6px;
   }
 
   .title {
-    font-size: 22px;
+    font-size: 21px;
     margin-bottom: 2px;
   }
 
   .subtitle {
     font-size: 11px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .deck-label {
     padding: 6px 10px;
     font-size: 11px;
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .table-shell {
     margin: 6px 0;
-    padding: 6px;
-    border-radius: 16px;
+    padding: 4px;
+    border-radius: 14px;
   }
 
   .table-oval {
-    padding: 6px;
+    padding: 4px;
     border-width: 2px;
   }
 
   .table-center {
-    gap: 6px;
+    gap: 4px;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
@@ -61,7 +61,7 @@
     gap: 6px;
     flex: 1 1 0;
     justify-content: center;
-    margin-top: -8px;
+    margin-top: -10px;
   }
 
   .section {
@@ -70,7 +70,7 @@
 
   .section-title {
     font-size: 10px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
 
   .slot-row {
@@ -78,14 +78,14 @@
   }
 
   .card-slot {
-    width: 50px;
-    height: 70px;
+    width: 48px;
+    height: 66px;
     font-size: 12px;
   }
 
   .deck-stack {
-    width: 50px;
-    height: 70px;
+    width: 48px;
+    height: 66px;
   }
 
   .deck-stack::before {
@@ -105,13 +105,13 @@
   .controls button {
     width: 100%;
     font-size: 12px;
-    padding: 10px 11px;
+    padding: 9px 10px;
   }
 
   .status {
     font-size: 12px;
-    padding: 9px;
-    margin-top: 10px;
+    padding: 8px;
+    margin-top: 8px;
   }
 
   .guide-panel {
