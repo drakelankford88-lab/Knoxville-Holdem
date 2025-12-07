@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
   body {
-    padding: 12px;
+    padding: 10px;
     overflow-x: hidden;
   }
 
@@ -8,7 +8,7 @@
     flex-direction: column;
     align-items: stretch;
     width: 100%;
-    gap: 12px;
+    gap: 10px;
   }
 
   .poker-app,
@@ -17,68 +17,73 @@
   }
 
   .poker-app {
-    padding: 16px;
-    gap: 12px;
+    padding: 14px;
+    gap: 10px;
   }
 
   .title {
-    font-size: 24px;
-    margin-bottom: 4px;
+    font-size: 22px;
+    margin-bottom: 2px;
   }
 
   .subtitle {
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-size: 11px;
+    margin-bottom: 8px;
   }
 
   .deck-label {
-    padding: 8px 12px;
-    font-size: 12px;
-    gap: 8px;
-    margin-bottom: 12px;
+    padding: 7px 10px;
+    font-size: 11px;
+    gap: 6px;
+    margin-bottom: 10px;
   }
 
   .table-shell {
-    margin: 12px 0;
-    padding: 16px;
-    border-radius: 22px;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 20px;
   }
 
   .table-oval {
-    padding: 16px 14px;
+    padding: 12px 10px;
     border-width: 2px;
   }
 
   .table-center {
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
   }
 
   .board {
-    gap: 8px;
+    gap: 6px;
+    flex: 1 1 0;
+    justify-content: center;
   }
 
   .section {
-    padding: 4px;
+    padding: 2px;
   }
 
   .section-title {
-    font-size: 11px;
-    margin-bottom: 6px;
+    font-size: 10px;
+    margin-bottom: 4px;
   }
 
   .slot-row {
-    gap: 8px;
+    gap: 6px;
   }
 
   .card-slot {
-    width: 60px;
-    height: 84px;
-    font-size: 15px;
+    width: 54px;
+    height: 76px;
+    font-size: 14px;
   }
 
   .deck-stack {
-    width: 60px;
-    height: 84px;
+    width: 54px;
+    height: 76px;
   }
 
   .deck-stack::before {
@@ -91,21 +96,21 @@
 
   .controls {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .controls button {
     width: 100%;
-    font-size: 14px;
-    padding: 12px 14px;
+    font-size: 13px;
+    padding: 11px 12px;
   }
 
   .status {
-    font-size: 13px;
-    padding: 12px;
+    font-size: 12px;
+    padding: 11px;
   }
 
   .guide-panel {
-    padding: 12px;
+    padding: 10px;
   }
 }
