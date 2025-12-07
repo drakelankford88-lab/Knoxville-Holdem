@@ -33,7 +33,7 @@
   }
 
   .deck-label {
-    padding: 6px 9px;
+    padding: 6px 8px;
     font-size: 11px;
     gap: 6px;
     margin-bottom: 4px;
@@ -99,20 +99,20 @@
 
   .controls {
     flex-direction: column;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 4px;
+    margin-top: 4px;
   }
 
   .controls button {
     width: 100%;
-    font-size: 12px;
-    padding: 8px 10px;
+    font-size: 11px;
+    padding: 8px 9px;
   }
 
   .status {
-    font-size: 12px;
-    padding: 8px;
-    margin-top: 8px;
+    font-size: 11px;
+    padding: 7px;
+    margin-top: 6px;
   }
 
   .guide-panel {
