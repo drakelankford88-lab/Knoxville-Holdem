@@ -1,11 +1,16 @@
 @media (max-width: 768px) {
   body {
-    padding: 18px;
+    padding: 10px;
     overflow-x: hidden;
   }
 
   .layout {
     width: 100%;
-    gap: 16px;
+    gap: 12px;
+  }
+
+  .poker-app,
+  .guide-panel {
+    min-width: 0;
   }
 }
