@@ -1,0 +1,8 @@
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 2px rgba(249, 214, 72, 0.25), 0 12px 30px rgba(0, 0, 0, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 4px rgba(249, 214, 72, 0.1), 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+}

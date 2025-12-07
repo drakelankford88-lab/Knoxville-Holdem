@@ -1,0 +1,100 @@
+.deck-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 14px;
+}
+
+.deck-label::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 0 6px rgba(249, 214, 72, 0.12);
+}
+
+.table-shell {
+  position: relative;
+  margin: 20px 0;
+  padding: 28px;
+  border-radius: 32px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 18px 50px rgba(0, 0, 0, 0.75);
+}
+
+.table-oval {
+  position: relative;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, #0f2d1e 0%, #0b2318 42%, #081910 80%);
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, 0.04), inset 0 1px 8px rgba(0, 0, 0, 0.6);
+  padding: 32px 28px;
+}
+
+.table-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.board {
+  margin: 10px 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.section {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: none;
+}
+
+.section-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.slot-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player-section,
+.ai-section {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: none;
+  margin: 6px 0;
+}
+
+.player-section .slot-row {
+  gap: 10px;
+}
+
+.player-section .card-slot {
+  background-size: 98% auto;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55);
+}

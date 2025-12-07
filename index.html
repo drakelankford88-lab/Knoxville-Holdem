@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knoxville Hold'em</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css?v=2" />
+    <script defer src="src/logic/handEvaluator.js?v=4"></script>
+    <script defer src="src/logic/handDescriptions.js?v=1"></script>
+    <script defer src="src/game/deck.js?v=1"></script>
+    <script defer src="src/game/gameState.js?v=1"></script>
+    <script defer src="src/ui/playerView.js?v=6"></script>
+    <script defer src="src/game/players/AIPlayer.js?v=3"></script>
+    <script defer src="src/ui/domRefs.js?v=1"></script>
+    <script defer src="src/ui/status.js?v=1"></script>
+    <script defer src="src/ui/bindings.js?v=1"></script>
+    <script defer src="src/app.js?v=1"></script>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="poker-app">
+        <div class="title">Knoxville Hold'em</div>
+        <div class="subtitle">Created by Drake Lankford</div>
+
+        <div id="deck-label" class="deck-label">Deck: 52 cards</div>
+
+          <div class="table-shell">
+            <div class="table-oval">
+              <div class="ai-section">
+                <div class="section-title">AI Cards</div>
+            <div class="slot-row">
+              <div class="card-slot" data-slot="ai">--</div>
+              <div class="card-slot" data-slot="ai">--</div>
+              <div class="card-slot" data-slot="ai">--</div>
+              <div class="card-slot" data-slot="ai">--</div>
+                <div class="card-slot" data-slot="ai">--</div>
+              </div>
+            </div>
+
+            <div class="table-center">
+              <div class="deck-stack" aria-hidden="true"></div>
+
+              <div class="board">
+                <div class="section">
+                  <div class="section-title">Flop</div>
+                  <div class="slot-row">
+                    <div class="card-slot" data-slot="flop">--</div>
+                    <div class="card-slot" data-slot="flop">--</div>
+                    <div class="card-slot" data-slot="flop">--</div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Turn</div>
+                  <div class="slot-row">
+                    <div class="card-slot" data-slot="turn">--</div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">River</div>
+                  <div class="slot-row">
+                    <div class="card-slot" data-slot="river">--</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="player-section">
+              <div class="section-title">Player Cards</div>
+              <div class="slot-row">
+                <div class="card-slot" data-slot="player">--</div>
+              <div class="card-slot" data-slot="player">--</div>
+              <div class="card-slot" data-slot="player">--</div>
+              <div class="card-slot" data-slot="player">--</div>
+              <div class="card-slot" data-slot="player">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div class="controls">
+          <button id="start-button" class="start-button">Click to Start Game</button>
+          <button id="deal-button">Deal Next Phase</button>
+          <button id="reset-button">Reset Table</button>
+        </div>
+
+        <div id="status-label" class="status">Click Deal Next Phase</div>
+      </div>
+      <div class="guide-panel">
+        <div class="guide-title">Hand Rankings</div>
+        <img src="assets/OtherImages/handrankingsguide.png?v=4" alt="Poker Hand Rankings Guide" class="guide-image" />
+      </div>
+    </div>
+  </body>
+</html>
