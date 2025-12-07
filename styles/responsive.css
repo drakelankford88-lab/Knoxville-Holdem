@@ -1,32 +1,11 @@
 @media (max-width: 768px) {
   body {
     padding: 18px;
+    overflow-x: hidden;
   }
 
   .layout {
-    flex-direction: column;
-    align-items: stretch;
     width: 100%;
     gap: 16px;
-  }
-
-  .controls {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .controls button {
-    width: 100%;
-  }
-}
-
-@media (max-width: 540px) {
-  /* Keep stacking but let desktop sizing remain; this helps show the whole game without shrinking assets. */
-  body {
-    padding: 14px;
-  }
-
-  .layout {
-    gap: 12px;
   }
 }
