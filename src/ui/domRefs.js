@@ -12,10 +12,24 @@
     const deckLabel = document.getElementById("deck-label");
     const statusLabel = document.getElementById("status-label");
     const startButton = document.getElementById("start-button");
-    const dealButton = document.getElementById("deal-button");
+    const flopButton = document.getElementById("flop-button");
+    const revealButton = document.getElementById("reveal-button");
     const resetButton = document.getElementById("reset-button");
+    const bankAmount = document.getElementById("bank-amount");
+    const winCount = document.getElementById("win-count");
+    const lossCount = document.getElementById("loss-count");
 
-    if (!deckLabel || !statusLabel || !dealButton || !resetButton || !startButton) {
+    if (
+      !deckLabel ||
+      !statusLabel ||
+      !flopButton ||
+      !revealButton ||
+      !resetButton ||
+      !startButton ||
+      !bankAmount ||
+      !winCount ||
+      !lossCount
+    ) {
       throw new Error("Missing required DOM nodes. Check index.html markup.");
     }
 
@@ -27,7 +41,18 @@
       river: getSlots("river", 1),
     };
 
-    return { deckLabel, statusLabel, startButton, dealButton, resetButton, slotRefs };
+    return {
+      deckLabel,
+      statusLabel,
+      startButton,
+      flopButton,
+      resetButton,
+      revealButton,
+      bankAmount,
+      winCount,
+      lossCount,
+      slotRefs,
+    };
   }
 
   window.DomRefs = { getDomRefs };

@@ -51,7 +51,8 @@
   }
 
   function renderPlayerSlots(slots, cards, options = {}) {
-    renderSlots(slots, cards, { ...options, revealed: true });
+    const { revealed = true } = options;
+    renderSlots(slots, cards, { ...options, revealed });
   }
 
   function renderAiSlots(slots, cards, options = {}) {

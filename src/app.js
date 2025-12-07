@@ -21,7 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
     slotRefs: refs.slotRefs,
     statusLabel: refs.statusLabel,
     deckLabel: refs.deckLabel,
-    dealButton: refs.dealButton,
+    flopButton: refs.flopButton,
+    revealButton: refs.revealButton,
+    bankAmount: refs.bankAmount,
+    winCount: refs.winCount,
+    lossCount: refs.lossCount,
   });
 
   bindings.bind(game, refs, statusUI);

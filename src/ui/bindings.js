@@ -3,12 +3,12 @@
   function bind(game, refs, statusUI) {
     if (!game || !refs || !statusUI) return;
 
-    const { startButton, dealButton, resetButton, slotRefs } = refs;
+    const { startButton, flopButton, revealButton, resetButton, slotRefs } = refs;
 
     function goToStartScreen() {
       game.baseReset();
       statusUI.showStart(refs);
-      statusUI.setStatus(refs, "Click Start to begin.");
+      statusUI.setStatus(refs, "Click Deal Cards to begin.");
     }
 
     function startGame() {
@@ -26,7 +26,8 @@
     });
 
     startButton.addEventListener("click", startGame);
-    dealButton.addEventListener("click", () => game.dealNextPhase());
+    flopButton.addEventListener("click", () => game.handleSeeFlop());
+    revealButton.addEventListener("click", () => game.handleRevealAi());
     resetButton.addEventListener("click", goToStartScreen);
 
     // Initialize UI.

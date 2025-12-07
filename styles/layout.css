@@ -60,3 +60,41 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
+
+.bank-display {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f9d648;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  z-index: 3;
+}
+
+.bank-display .stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bank-display .wins {
+  color: #6df1c2;
+}
+
+.bank-display .losses {
+  color: #ff9fa8;
+}
+
+.bank-display .bank {
+  color: #f9d648;
+}

@@ -10,23 +10,28 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles/main.css?v=6" />
+    <link rel="stylesheet" href="styles/main.css?v=13" />
     <script defer src="src/logic/handEvaluator.js?v=4"></script>
     <script defer src="src/logic/handDescriptions.js?v=1"></script>
     <script defer src="src/game/deck.js?v=1"></script>
-    <script defer src="src/game/gameState.js?v=1"></script>
+    <script defer src="src/game/gameState.js?v=8"></script>
     <script defer src="src/ui/playerView.js?v=6"></script>
     <script defer src="src/game/players/AIPlayer.js?v=3"></script>
-    <script defer src="src/ui/domRefs.js?v=1"></script>
+    <script defer src="src/ui/domRefs.js?v=6"></script>
     <script defer src="src/ui/status.js?v=1"></script>
     <script defer src="src/ui/bindings.js?v=1"></script>
-    <script defer src="src/app.js?v=1"></script>
+    <script defer src="src/app.js?v=7"></script>
   </head>
   <body>
     <div class="layout">
       <div class="poker-app">
         <div class="title">Knoxville Hold'em</div>
         <div class="subtitle">Created by Drake Lankford</div>
+        <div class="bank-display" aria-live="polite">
+          <span class="stat wins">Wins: <span id="win-count">0</span></span>
+          <span class="stat losses">Losses: <span id="loss-count">0</span></span>
+          <span class="stat bank">Bank: $<span id="bank-amount">10</span></span>
+        </div>
 
         <div id="deck-label" class="deck-label">Deck: 52 cards</div>
 
@@ -86,12 +91,13 @@
       </div>
 
         <div class="controls">
-          <button id="start-button" class="start-button">Click to Start Game</button>
-          <button id="deal-button">Deal Next Phase</button>
+          <button id="start-button" class="start-button">Deal Cards</button>
+          <button id="flop-button" class="hidden">See Flop - $1 Buy-In</button>
+          <button id="reveal-button" class="hidden">Reveal AI Hand</button>
           <button id="reset-button">Reset Table</button>
         </div>
 
-        <div id="status-label" class="status">Click Deal Next Phase</div>
+        <div id="status-label" class="status">Click Deal Cards to begin.</div>
       </div>
       <div class="guide-panel">
         <div class="guide-title">Hand Rankings</div>
@@ -100,3 +106,4 @@
     </div>
   </body>
 </html>
+

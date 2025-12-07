@@ -32,6 +32,15 @@
     margin-bottom: 4px;
   }
 
+  .bank-display {
+    position: static;
+    align-self: flex-end;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-top: 4px;
+    gap: 8px;
+  }
+
   .deck-label {
     padding: 6px 8px;
     font-size: 11px;

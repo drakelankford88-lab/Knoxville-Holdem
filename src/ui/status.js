@@ -2,14 +2,16 @@
 (() => {
   function showStart(refs) {
     refs.startButton.classList.remove("hidden");
-    refs.dealButton.classList.add("hidden");
     refs.resetButton.classList.add("hidden");
+    refs.flopButton.classList.add("hidden");
+    refs.revealButton.classList.add("hidden");
   }
 
   function showPlaying(refs) {
     refs.startButton.classList.add("hidden");
-    refs.dealButton.classList.remove("hidden");
     refs.resetButton.classList.remove("hidden");
+    refs.flopButton.classList.add("hidden");
+    refs.revealButton.classList.add("hidden");
   }
 
   function setStatus(refs, message) {
