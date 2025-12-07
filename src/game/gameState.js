@@ -31,9 +31,9 @@
     }
 
     const START_BANK = 10;
-    const WIN_DELTA = 1;
-    const LOSS_DELTA = 0; // no extra loss beyond the buy-in
     const BUY_IN = 1;
+    const WIN_DELTA = BUY_IN * 2; // pay double the buy-in on win
+    const LOSS_DELTA = 0; // no extra loss beyond the buy-in
 
     // phaseIndex: 0 not dealt, 1 waiting for flop button, 2 discard then deal Turn, 3 discard then deal River, 4 discard then reveal.
     let phaseIndex = 0;
