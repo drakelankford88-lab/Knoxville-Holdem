@@ -5,7 +5,7 @@
   flex-shrink: 0;
   border-radius: 10px;
   background: #1c2f52;
-  background-image: url("../assets/cards/cardback_black.png?v=3");
+  background-image: url("../assets/newcards/cardback_black.png?v=3");
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center center;
@@ -19,7 +19,7 @@
   inset: 0;
   border-radius: 10px;
   background: #1c2f52;
-  background-image: url("../assets/cards/cardback_black.png?v=3");
+  background-image: url("../assets/newcards/cardback_black.png?v=3");
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center center;
@@ -74,7 +74,7 @@
 
 .card-slot.face-down {
   background: linear-gradient(135deg, #25407d, #182a4b);
-  background-image: url("../assets/cards/cardback_black.png?v=3");
+  background-image: url("../assets/newcards/cardback_black.png?v=3");
   background-size: 96% auto;
   background-repeat: no-repeat;
   background-position: center center;

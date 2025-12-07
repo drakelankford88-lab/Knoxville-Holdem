@@ -95,7 +95,7 @@
         slot.classList.add("face-down");
         slot.classList.remove("empty");
         slot.textContent = "";
-        slot.style.backgroundImage = 'url("../assets/cards/cardback_black.png?v=3")';
+        slot.style.backgroundImage = 'url("assets/newcards/cardback_black.png?v=3")';
         slot.classList.remove("discardable");
         activeSlots.push(slot);
         return;
