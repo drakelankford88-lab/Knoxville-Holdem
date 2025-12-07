@@ -1,47 +1,103 @@
 @media (max-width: 768px) {
   body {
-    padding: 18px;
+    padding: 14px;
   }
 
   .layout {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+    gap: 16px;
+  }
+
+  .poker-app {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .deck-label {
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .table-shell {
+    margin: 12px 0;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .table-oval {
+    padding: 18px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .table-center {
+    gap: 14px;
   }
 
   .board {
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .section {
+    padding: 4px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    margin-bottom: 6px;
   }
 
   .slot-row {
-    gap: 12px;
+    gap: 8px;
   }
 
   .card-slot {
-    width: 72px;
-    height: 100px;
-    font-size: 17px;
+    width: 60px;
+    height: 84px;
+    font-size: 15px;
   }
 
   .deck-stack {
-    width: 72px;
-    height: 100px;
+    width: 60px;
+    height: 84px;
   }
 
   .deck-stack::before {
-    transform: translate(4px, 3px);
+    transform: translate(3px, 2px);
   }
 
   .deck-stack::after {
-    transform: translate(8px, 6px);
+    transform: translate(6px, 5px);
   }
 
   .controls {
     flex-direction: column;
+    gap: 8px;
   }
 
   .controls button {
     width: 100%;
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .status {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .guide-panel {
+    padding: 12px;
   }
 }
