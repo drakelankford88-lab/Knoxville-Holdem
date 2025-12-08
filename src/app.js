@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     deckLabel: refs.deckLabel,
     flopButton: refs.flopButton,
     revealButton: refs.revealButton,
+    aiCountSelect: refs.aiCountSelect,
     bankAmount: refs.bankAmount,
     winCount: refs.winCount,
     lossCount: refs.lossCount,

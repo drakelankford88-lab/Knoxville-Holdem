@@ -35,16 +35,32 @@
 
         <div id="deck-label" class="deck-label">Deck: 52 cards</div>
 
-          <div class="table-shell">
-            <div class="table-oval">
-              <div class="ai-section">
-                <div class="section-title">AI Cards</div>
-            <div class="slot-row">
-              <div class="card-slot" data-slot="ai">--</div>
-              <div class="card-slot" data-slot="ai">--</div>
-              <div class="card-slot" data-slot="ai">--</div>
-              <div class="card-slot" data-slot="ai">--</div>
-                <div class="card-slot" data-slot="ai">--</div>
+        <div class="table-shell">
+          <div class="table-oval">
+            <div class="ai-section">
+              <div class="section-title">AI Cards</div>
+              <div class="ai-rows">
+                <div class="ai-row">
+                  <div class="ai-label">AI 1</div>
+                  <div class="slot-row ai-slot-row">
+                    <div class="card-slot" data-slot="ai-0">--</div>
+                    <div class="card-slot" data-slot="ai-0">--</div>
+                  </div>
+                </div>
+                <div class="ai-row">
+                  <div class="ai-label">AI 2</div>
+                  <div class="slot-row ai-slot-row">
+                    <div class="card-slot" data-slot="ai-1">--</div>
+                    <div class="card-slot" data-slot="ai-1">--</div>
+                  </div>
+                </div>
+                <div class="ai-row">
+                  <div class="ai-label">AI 3</div>
+                  <div class="slot-row ai-slot-row">
+                    <div class="card-slot" data-slot="ai-2">--</div>
+                    <div class="card-slot" data-slot="ai-2">--</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -81,16 +97,25 @@
               <div class="section-title">Player Cards</div>
               <div class="slot-row">
                 <div class="card-slot" data-slot="player">--</div>
-              <div class="card-slot" data-slot="player">--</div>
-              <div class="card-slot" data-slot="player">--</div>
-              <div class="card-slot" data-slot="player">--</div>
-              <div class="card-slot" data-slot="player">--</div>
+                <div class="card-slot" data-slot="player">--</div>
+                <div class="card-slot" data-slot="player">--</div>
+                <div class="card-slot" data-slot="player">--</div>
+                <div class="card-slot" data-slot="player">--</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
         <div class="controls">
+          <div class="ai-count-control">
+            <label for="ai-count-select">AI Opponents</label>
+            <select id="ai-count-select">
+              <option value="1">1 AI</option>
+              <option value="2">2 AIs</option>
+              <option value="3">3 AIs</option>
+            </select>
+            <div class="ai-count-hint">Set after dealing, before the flop.</div>
+          </div>
           <button id="start-button" class="start-button">Deal Cards</button>
           <button id="flop-button" class="hidden">See Flop - $1 Buy-In</button>
           <button id="reveal-button" class="hidden">Reveal AI Hand</button>
@@ -98,10 +123,6 @@
         </div>
 
         <div id="status-label" class="status">Click Deal Cards to begin.</div>
-      </div>
-      <div class="guide-panel">
-        <div class="guide-title">Hand Rankings</div>
-        <img src="assets/OtherImages/handrankingsguide.png?v=4" alt="Poker Hand Rankings Guide" class="guide-image" />
       </div>
     </div>
   </body>

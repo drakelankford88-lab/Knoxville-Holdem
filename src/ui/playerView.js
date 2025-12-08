@@ -56,7 +56,12 @@
   }
 
   function renderAiSlots(slots, cards, options = {}) {
-    renderSlots(slots, cards, { ...options });
+    const hands = Array.isArray(cards) ? cards : [];
+    slots.forEach((seatSlots, idx) => {
+      const hand = hands[idx] || [];
+      const isActiveSeat = idx < hands.length;
+      renderSlots(seatSlots, isActiveSeat ? hand : [], { ...options, showPlaceholders: false });
+    });
   }
 
   function renderSlots(slots, cards, options) {

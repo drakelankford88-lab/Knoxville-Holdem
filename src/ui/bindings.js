@@ -3,7 +3,7 @@
   function bind(game, refs, statusUI) {
     if (!game || !refs || !statusUI) return;
 
-    const { startButton, flopButton, revealButton, resetButton, slotRefs } = refs;
+    const { startButton, flopButton, revealButton, resetButton, aiCountSelect, slotRefs } = refs;
 
     function goToStartScreen() {
       game.baseReset();
@@ -26,6 +26,11 @@
     });
 
     startButton.addEventListener("click", startGame);
+    aiCountSelect.addEventListener("change", () => {
+      const parsed = Number(aiCountSelect.value);
+      if (Number.isNaN(parsed)) return;
+      game.setAiCount(parsed);
+    });
     flopButton.addEventListener("click", () => game.handleSeeFlop());
     revealButton.addEventListener("click", () => game.handleRevealAi());
     resetButton.addEventListener("click", goToStartScreen);

@@ -107,15 +107,21 @@
   }
 
   .controls {
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 4px;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px;
+    margin-top: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
   }
 
   .controls button {
-    width: 100%;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    white-space: nowrap;
     font-size: 11px;
-    padding: 8px 9px;
+    padding: 10px 12px;
   }
 
   .status {
