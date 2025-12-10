@@ -16,7 +16,7 @@
     <script defer src="src/game/deck.js?v=1"></script>
     <script defer src="src/game/gameState.js?v=14"></script>
     <script defer src="src/ui/playerView.js?v=6"></script>
-    <script defer src="src/game/players/AIPlayer.js?v=3"></script>
+    <script defer src="src/game/players/BotPlayer.js?v=3"></script>
     <script defer src="src/ui/domRefs.js?v=6"></script>
     <script defer src="src/ui/status.js?v=1"></script>
     <script defer src="src/ui/bindings.js?v=1"></script>
@@ -30,35 +30,49 @@
         <div class="bank-display" aria-live="polite">
           <span class="stat wins">Wins: <span id="win-count">0</span></span>
           <span class="stat losses">Losses: <span id="loss-count">0</span></span>
-          <span class="stat bank">Bank: $<span id="bank-amount">10</span></span>
+          <span class="stat bank">Coins: <span id="bank-amount">100</span></span>
         </div>
 
         <div id="deck-label" class="deck-label">Deck: 52 cards</div>
 
         <div class="table-shell">
           <div class="table-oval">
-            <div class="ai-section">
-              <div class="section-title">AI Cards</div>
-              <div class="ai-rows">
-                <div class="ai-row">
-                  <div class="ai-label">AI 1</div>
-                  <div class="slot-row ai-slot-row">
-                    <div class="card-slot" data-slot="ai-0">--</div>
-                    <div class="card-slot" data-slot="ai-0">--</div>
+            <div class="bot-section">
+              <div class="section-title">Bot Cards</div>
+              <div class="bot-rows">
+                <div class="bot-row">
+                  <div class="bot-label">Bot 1</div>
+                  <div class="slot-row bot-slot-row">
+                    <div class="card-slot" data-slot="bot-0">--</div>
+                    <div class="card-slot" data-slot="bot-0">--</div>
                   </div>
                 </div>
-                <div class="ai-row">
-                  <div class="ai-label">AI 2</div>
-                  <div class="slot-row ai-slot-row">
-                    <div class="card-slot" data-slot="ai-1">--</div>
-                    <div class="card-slot" data-slot="ai-1">--</div>
+                <div class="bot-row">
+                  <div class="bot-label">Bot 2</div>
+                  <div class="slot-row bot-slot-row">
+                    <div class="card-slot" data-slot="bot-1">--</div>
+                    <div class="card-slot" data-slot="bot-1">--</div>
                   </div>
                 </div>
-                <div class="ai-row">
-                  <div class="ai-label">AI 3</div>
-                  <div class="slot-row ai-slot-row">
-                    <div class="card-slot" data-slot="ai-2">--</div>
-                    <div class="card-slot" data-slot="ai-2">--</div>
+                <div class="bot-row">
+                  <div class="bot-label">Bot 3</div>
+                  <div class="slot-row bot-slot-row">
+                    <div class="card-slot" data-slot="bot-2">--</div>
+                    <div class="card-slot" data-slot="bot-2">--</div>
+                  </div>
+                </div>
+                <div class="bot-row">
+                  <div class="bot-label">Bot 4</div>
+                  <div class="slot-row bot-slot-row">
+                    <div class="card-slot" data-slot="bot-3">--</div>
+                    <div class="card-slot" data-slot="bot-3">--</div>
+                  </div>
+                </div>
+                <div class="bot-row">
+                  <div class="bot-label">Bot 5</div>
+                  <div class="slot-row bot-slot-row">
+                    <div class="card-slot" data-slot="bot-4">--</div>
+                    <div class="card-slot" data-slot="bot-4">--</div>
                   </div>
                 </div>
               </div>
@@ -107,18 +121,22 @@
         </div>
 
         <div class="controls">
-          <div class="ai-count-control">
-            <label for="ai-count-select">AI Opponents</label>
-            <select id="ai-count-select">
-              <option value="1">1 AI</option>
-              <option value="2">2 AIs</option>
-              <option value="3">3 AIs</option>
-            </select>
-            <div class="ai-count-hint">Set after dealing, before the flop.</div>
+          <div class="bot-count-control hidden">
+            <div class="bot-slider-container">
+              <div class="bot-slider-tooltip" id="bot-slider-tooltip">1 Bot</div>
+              <input type="range" id="bot-count-slider" min="1" max="5" step="1" value="1" />
+              <div class="bot-slider-ticks">
+                <span class="tick" data-value="1">1.3x</span>
+                <span class="tick" data-value="2">1.6x</span>
+                <span class="tick" data-value="3">1.9x</span>
+                <span class="tick" data-value="4">2.1x</span>
+                <span class="tick" data-value="5">2.4x</span>
+              </div>
+            </div>
           </div>
           <button id="start-button" class="start-button">Deal Cards</button>
-          <button id="flop-button" class="hidden">See Flop - $1 Buy-In</button>
-          <button id="reveal-button" class="hidden">Reveal AI Hand</button>
+          <button id="flop-button" class="hidden">See Flop - 10 Coin Bet</button>
+          <button id="reveal-button" class="hidden">Reveal Bot Hand</button>
           <button id="reset-button">Reset Table</button>
         </div>
 

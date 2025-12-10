@@ -252,7 +252,7 @@ body::before {
 }
 
 .player-section,
-.ai-section {
+.bot-section {
   background: transparent;
   border: none;
   border-radius: 12px;

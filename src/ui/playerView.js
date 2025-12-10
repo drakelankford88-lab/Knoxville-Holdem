@@ -1,4 +1,4 @@
-// Rendering helpers for player and AI card slots.
+// Rendering helpers for player and bot card slots.
 (() => {
   function cardCodeToPath(code) {
     const rank = code.slice(0, -1);
@@ -33,6 +33,14 @@
   function setSlotCard(slot, cardCode, options = {}) {
     const { collapseWhenEmpty = false } = options;
     slot.classList.toggle("has-card", Boolean(cardCode));
+    
+    // Store or clear card code in data attribute
+    if (cardCode) {
+      slot.dataset.cardCode = cardCode;
+    } else {
+      delete slot.dataset.cardCode;
+    }
+    
     if (!cardCode) {
       if (collapseWhenEmpty) {
         slot.classList.add("empty");
@@ -55,12 +63,22 @@
     renderSlots(slots, cards, { ...options, revealed });
   }
 
-  function renderAiSlots(slots, cards, options = {}) {
+  function renderBotSlots(slots, cards, options = {}) {
+    const { botRows } = options;
     const hands = Array.isArray(cards) ? cards : [];
     slots.forEach((seatSlots, idx) => {
       const hand = hands[idx] || [];
       const isActiveSeat = idx < hands.length;
       renderSlots(seatSlots, isActiveSeat ? hand : [], { ...options, showPlaceholders: false });
+      
+      // Hide/show the entire bot row based on whether it's active
+      if (botRows && botRows[idx]) {
+        if (isActiveSeat) {
+          botRows[idx].classList.remove("hidden");
+        } else {
+          botRows[idx].classList.add("hidden");
+        }
+      }
     });
   }
 
@@ -87,6 +105,7 @@
       if (!slot) return;
 
       slot.dataset.cardIndex = "";
+      delete slot.dataset.cardCode; // Clear card code when re-rendering
       slot.classList.remove("face-down");
       if (addPrestartClass) {
         slot.classList.add("prestart");
@@ -109,6 +128,7 @@
 
       if (card) {
         slot.dataset.cardIndex = String(cardIdxCounter);
+        slot.dataset.cardCode = card; // Store card code
         cardIdxCounter += 1;
         slot.classList.add("has-card");
         slot.classList.remove("prestart");
@@ -172,11 +192,75 @@
     });
   }
 
+  /**
+   * Highlight the winning cards with a glow effect.
+   * @param {string[]} winningCardCodes - Array of 5 card codes that make up the winning hand
+   * @param {object} slotRefs - Reference to all slot elements
+   * @param {boolean} isPlayerWin - True for green glow (player), false for red glow (bot)
+   * @param {number} winningBotIndex - Index of winning bot (only used when isPlayerWin is false)
+   */
+  function highlightWinningCards(winningCardCodes, slotRefs, isPlayerWin, winningBotIndex = -1) {
+    const winningSet = new Set(winningCardCodes);
+    const highlightClass = isPlayerWin ? "winning-card" : "losing-card";
+    
+    // Helper to check and highlight a slot
+    function checkAndHighlight(slot) {
+      const cardCode = slot.dataset.cardCode;
+      if (cardCode && winningSet.has(cardCode)) {
+        slot.classList.add(highlightClass);
+        winningSet.delete(cardCode); // Avoid double-highlighting same card
+      }
+    }
+    
+    // Check player slots (only if player won)
+    if (isPlayerWin) {
+      slotRefs.player.forEach(checkAndHighlight);
+    }
+    
+    // Check bot slots (only the winning bot's cards if bot won)
+    if (!isPlayerWin && winningBotIndex >= 0) {
+      const botSlots = slotRefs.bot[winningBotIndex];
+      if (botSlots) {
+        botSlots.forEach(checkAndHighlight);
+      }
+    }
+    
+    // Check community cards (flop, turn, river) - these apply to both player and bot wins
+    slotRefs.flop.forEach(checkAndHighlight);
+    slotRefs.turn.forEach(checkAndHighlight);
+    slotRefs.river.forEach(checkAndHighlight);
+  }
+
+  /**
+   * Clear all highlight classes from all card slots.
+   * @param {object} slotRefs - Reference to all slot elements
+   */
+  function clearHighlights(slotRefs) {
+    const clearSlot = (slot) => {
+      slot.classList.remove("winning-card", "losing-card");
+    };
+    
+    // Clear player slots
+    slotRefs.player.forEach(clearSlot);
+    
+    // Clear all bot slots
+    slotRefs.bot.forEach((botSlots) => {
+      botSlots.forEach(clearSlot);
+    });
+    
+    // Clear community cards
+    slotRefs.flop.forEach(clearSlot);
+    slotRefs.turn.forEach(clearSlot);
+    slotRefs.river.forEach(clearSlot);
+  }
+
   window.PlayerView = {
     cardCodeToPath,
     setSlotCard,
     renderPlayerSlots,
-    renderAiSlots,
+    renderBotSlots,
     updateDiscardableStyles,
+    highlightWinningCards,
+    clearHighlights,
   };
 })();

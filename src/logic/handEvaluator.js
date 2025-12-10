@@ -35,7 +35,7 @@
       throw new Error(`Invalid card code: ${code}`);
     }
     const [, rankText, suit] = match;
-    return { rankText, rank: RANK_VALUE[rankText], suit };
+    return { rankText, rank: RANK_VALUE[rankText], suit, code };
   }
 
   function evaluateBestHand(cardCodes) {
@@ -48,9 +48,19 @@
     // Rank and suit counts.
     const rankCounts = new Map();
     const suitCounts = new Map();
+    // Group cards by rank and suit for easy lookup
+    const cardsByRank = new Map();
+    const cardsBySuit = new Map();
+    
     cards.forEach((c) => {
       rankCounts.set(c.rank, (rankCounts.get(c.rank) || 0) + 1);
       suitCounts.set(c.suit, (suitCounts.get(c.suit) || 0) + 1);
+      
+      if (!cardsByRank.has(c.rank)) cardsByRank.set(c.rank, []);
+      cardsByRank.get(c.rank).push(c);
+      
+      if (!cardsBySuit.has(c.suit)) cardsBySuit.set(c.suit, []);
+      cardsBySuit.get(c.suit).push(c);
     });
 
     const uniqueRanksDesc = Array.from(rankCounts.keys()).sort((a, b) => b - a);
@@ -64,12 +74,10 @@
       }
     }
 
-    const flushRanksDesc = flushSuit
-      ? cards
-          .filter((c) => c.suit === flushSuit)
-          .map((c) => c.rank)
-          .sort((a, b) => b - a)
+    const flushCards = flushSuit
+      ? cardsBySuit.get(flushSuit).sort((a, b) => b.rank - a.rank)
       : [];
+    const flushRanksDesc = flushCards.map((c) => c.rank);
 
     // Straight detection helpers.
     const straightHigh = findStraightHigh(uniqueRanksDesc);
@@ -91,20 +99,24 @@
 
     // Straight flush.
     if (straightFlushHigh) {
+      const sfCards = getStraightCards(flushCards, straightFlushHigh);
       return {
         category: CATEGORY.STRAIGHT_FLUSH,
         name: "Straight Flush",
         tiebreak: [straightFlushHigh],
+        cards: sfCards.map(c => c.code),
       };
     }
 
     // Four of a kind.
     if (quads !== null) {
-      const kicker = topRanksExcluding(uniqueRanksDesc, [quads], 1);
+      const quadCards = cardsByRank.get(quads).slice(0, 4);
+      const kicker = topCardsExcluding(cards, [quads], 1);
       return {
         category: CATEGORY.FOUR_OF_A_KIND,
         name: "Four of a Kind",
-        tiebreak: [quads, kicker[0]],
+        tiebreak: [quads, kicker[0]?.rank],
+        cards: [...quadCards, ...kicker].map(c => c.code),
       };
     }
 
@@ -112,40 +124,48 @@
     if (trips.length >= 1 && (pairs.length >= 1 || trips.length >= 2)) {
       const tripRank = trips[0];
       const pairRank = pairs.length >= 1 ? pairs[0] : trips[1];
+      const tripCards = cardsByRank.get(tripRank).slice(0, 3);
+      const pairCards = cardsByRank.get(pairRank).slice(0, 2);
       return {
         category: CATEGORY.FULL_HOUSE,
         name: "Full House",
         tiebreak: [tripRank, pairRank],
+        cards: [...tripCards, ...pairCards].map(c => c.code),
       };
     }
 
     // Flush.
     if (flushSuit) {
-      const topFlush = flushRanksDesc.slice(0, 5);
+      const topFlushCards = flushCards.slice(0, 5);
       return {
         category: CATEGORY.FLUSH,
         name: "Flush",
-        tiebreak: topFlush,
+        tiebreak: topFlushCards.map(c => c.rank),
+        cards: topFlushCards.map(c => c.code),
       };
     }
 
     // Straight.
     if (straightHigh) {
+      const straightCards = getStraightCards(cards, straightHigh);
       return {
         category: CATEGORY.STRAIGHT,
         name: "Straight",
         tiebreak: [straightHigh],
+        cards: straightCards.map(c => c.code),
       };
     }
 
     // Trips.
     if (trips.length >= 1) {
       const tripRank = trips[0];
-      const kickers = topRanksExcluding(uniqueRanksDesc, [tripRank], 2);
+      const tripCards = cardsByRank.get(tripRank).slice(0, 3);
+      const kickers = topCardsExcluding(cards, [tripRank], 2);
       return {
         category: CATEGORY.THREE_OF_A_KIND,
         name: "Three of a Kind",
-        tiebreak: [tripRank, ...kickers],
+        tiebreak: [tripRank, ...kickers.map(c => c.rank)],
+        cards: [...tripCards, ...kickers].map(c => c.code),
       };
     }
 
@@ -153,30 +173,37 @@
     if (pairs.length >= 2) {
       const topPair = pairs[0];
       const secondPair = pairs[1];
-      const kicker = topRanksExcluding(uniqueRanksDesc, [topPair, secondPair], 1);
+      const topPairCards = cardsByRank.get(topPair).slice(0, 2);
+      const secondPairCards = cardsByRank.get(secondPair).slice(0, 2);
+      const kicker = topCardsExcluding(cards, [topPair, secondPair], 1);
       return {
         category: CATEGORY.TWO_PAIR,
         name: "Two Pair",
-        tiebreak: [topPair, secondPair, kicker[0]],
+        tiebreak: [topPair, secondPair, kicker[0]?.rank],
+        cards: [...topPairCards, ...secondPairCards, ...kicker].map(c => c.code),
       };
     }
 
     // One pair.
     if (pairs.length === 1) {
       const pairRank = pairs[0];
-      const kickers = topRanksExcluding(uniqueRanksDesc, [pairRank], 3);
+      const pairCards = cardsByRank.get(pairRank).slice(0, 2);
+      const kickers = topCardsExcluding(cards, [pairRank], 3);
       return {
         category: CATEGORY.ONE_PAIR,
         name: "One Pair",
-        tiebreak: [pairRank, ...kickers],
+        tiebreak: [pairRank, ...kickers.map(c => c.rank)],
+        cards: [...pairCards, ...kickers].map(c => c.code),
       };
     }
 
     // High card.
+    const highCards = cards.sort((a, b) => b.rank - a.rank).slice(0, 5);
     return {
       category: CATEGORY.HIGH_CARD,
       name: "High Card",
-      tiebreak: uniqueRanksDesc.slice(0, 5),
+      tiebreak: highCards.map(c => c.rank),
+      cards: highCards.map(c => c.code),
     };
   }
 
@@ -214,6 +241,25 @@
     return null;
   }
 
+  // Get the 5 cards that make up a straight ending at highRank
+  function getStraightCards(cards, highRank) {
+    const result = [];
+    // Handle wheel straight (A-2-3-4-5)
+    const targetRanks = highRank === 5 
+      ? [5, 4, 3, 2, 14] // Wheel: 5-4-3-2-A (A counts as 1)
+      : [highRank, highRank - 1, highRank - 2, highRank - 3, highRank - 4];
+    
+    const usedRanks = new Set();
+    for (const targetRank of targetRanks) {
+      const card = cards.find(c => c.rank === targetRank && !usedRanks.has(c.code));
+      if (card) {
+        result.push(card);
+        usedRanks.add(card.code);
+      }
+    }
+    return result;
+  }
+
   function uniqueDescUnique(arr) {
     const seen = new Set();
     const out = [];
@@ -237,6 +283,13 @@
       }
     }
     return result;
+  }
+
+  // Get top N cards excluding certain ranks
+  function topCardsExcluding(cards, excludeRanks, count) {
+    const ex = new Set(excludeRanks);
+    const sorted = cards.filter(c => !ex.has(c.rank)).sort((a, b) => b.rank - a.rank);
+    return sorted.slice(0, count);
   }
 
   // Expose globally for now.

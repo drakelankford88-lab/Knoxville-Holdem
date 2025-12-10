@@ -1,4 +1,4 @@
-// Basic AI discard logic. Exposed globally as window.AIPlayer.
+// Basic bot discard logic. Exposed globally as window.BotPlayer.
 (() => {
   function chooseDiscard(cards, boardCards) {
     // cards: array of codes like "AS", "10H".
@@ -25,5 +25,6 @@
     return parseInt(rank, 10);
   }
 
-  window.AIPlayer = { chooseDiscard };
+  window.BotPlayer = { chooseDiscard };
 })();
+
