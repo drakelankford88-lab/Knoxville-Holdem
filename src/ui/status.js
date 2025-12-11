@@ -8,6 +8,9 @@
     if (refs.botCountControl) {
       refs.botCountControl.classList.add("hidden");
     }
+    if (refs.betControl) {
+      refs.betControl.classList.add("hidden");
+    }
     if (refs.botRows) {
       refs.botRows.classList.add("hidden");
       // Add invisible placeholder to maintain table size
@@ -28,6 +31,7 @@
     if (refs.botCountControl) {
       refs.botCountControl.classList.add("hidden");
     }
+    // Bet control visibility is managed by gameState based on phase
   }
 
   function setStatus(refs, message) {

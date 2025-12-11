@@ -87,12 +87,8 @@
   gap: 4px;
 }
 
-.bank-display .wins {
+.bank-display .streak {
   color: #6df1c2;
-}
-
-.bank-display .losses {
-  color: #ff9fa8;
 }
 
 .bank-display .bank {

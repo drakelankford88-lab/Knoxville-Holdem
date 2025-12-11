@@ -23,13 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
     deckLabel: refs.deckLabel,
     flopButton: refs.flopButton,
     revealButton: refs.revealButton,
+    playAgainButton: refs.playAgainButton,
     botCountSlider: refs.botCountSlider,
     botCountControl: refs.botCountControl,
     botSection: refs.botSection,
     botRows: refs.botRows,
     bankAmount: refs.bankAmount,
-    winCount: refs.winCount,
-    lossCount: refs.lossCount,
+    winStreak: refs.winStreak,
+    betInput: refs.betInput,
+    betDecrementBtn: refs.betDecrementBtn,
+    betIncrementBtn: refs.betIncrementBtn,
+    betControl: refs.betControl,
   });
 
   bindings.bind(game, refs, statusUI);

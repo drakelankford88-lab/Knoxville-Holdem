@@ -10,13 +10,17 @@
       deckLabel,
       flopButton,
       revealButton,
+      playAgainButton,
       botCountSlider,
       botCountControl,
       botSection,
       botRows,
       bankAmount,
-      winCount,
-      lossCount,
+      winStreak,
+      betInput,
+      betDecrementBtn,
+      betIncrementBtn,
+      betControl,
     } = deps || {};
     if (
       !view ||
@@ -29,15 +33,14 @@
       !revealButton ||
       !botCountSlider ||
       !bankAmount ||
-      !winCount ||
-      !lossCount
+      !winStreak
     ) {
       throw new Error("GameState missing required dependencies.");
     }
 
     // Supports 1-5 bot opponents (two hole cards each), selected after the initial deal and locked once the flop is shown.
     const START_BANK = 100;
-    const BUY_IN = 10;
+    const MIN_BET = 10;
     // Multipliers based on bot count: 1 bot = 1.3x, 2 = 1.6x, 3 = 1.9x, 4 = 2.1x, 5 = 2.4x
     const BOT_MULTIPLIERS = [1.3, 1.6, 1.9, 2.1, 2.4];
     const MAX_BOT = 5;
@@ -62,11 +65,11 @@
     let turnCard = null;
     let riverCard = null;
     let bank = START_BANK;
-    let wins = 0;
-    let losses = 0;
+    let streak = 0;
     let flopUsed = false;
     let botCount = DEFAULT_BOT_COUNT;
     let botSelectionLocked = false;
+    let currentBet = MIN_BET; // Persists between games
 
     function updateDeckLabel() {
       deckLabel.textContent = `Deck: ${deck.length} cards`;
@@ -74,8 +77,11 @@
 
     function updateBankDisplay() {
       bankAmount.textContent = String(bank);
-      winCount.textContent = String(wins);
-      lossCount.textContent = String(losses);
+      winStreak.textContent = String(streak);
+    }
+
+    function updateFlopButtonText() {
+      flopButton.textContent = "See Flop";
     }
 
     function renderBoard() {
@@ -140,14 +146,15 @@
       let verdict = "It's a tie.";
       let verdictLabel = "TIE";
       const multiplier = getMultiplier(botCount);
-      const winnings = Math.floor(BUY_IN * multiplier);
+      // Apply rounding: .5+ rounds up, .4- rounds down (Math.round handles this)
+      const winnings = Math.round(currentBet * multiplier);
       
       if (cmp > 0) {
-        const profit = winnings - BUY_IN;
+        const profit = winnings - currentBet;
         verdict = "You win.";
         verdictLabel = "YOU WIN";
-        bank += winnings; // Return bet plus profit (already paid BUY_IN earlier)
-        wins += 1;
+        bank += winnings; // Return bet plus profit (already paid currentBet earlier)
+        streak += 1;
         updateBankDisplay();
         const playerDesc = handDescriptions.describeHand(playerResult);
         const botDesc = handDescriptions.describeHand(bestBotResult);
@@ -163,7 +170,7 @@
         const botName = `Bot ${bestBotIndex + 1}`;
         verdict = `${botName} wins.`;
         verdictLabel = `${botName.toUpperCase()} WINS`;
-        losses += 1;
+        streak = 0; // Reset win streak on loss
         updateBankDisplay();
         const playerDesc = handDescriptions.describeHand(playerResult);
         const botDesc = handDescriptions.describeHand(bestBotResult);
@@ -171,13 +178,13 @@
           `<span class="verdict">${verdictLabel}</span>`,
           `You: ${playerDesc}.`,
           `Best Bot: ${botDesc}.`,
-          `<span class="loss">-${BUY_IN} coins</span>`,
+          `<span class="loss">-${currentBet} coins</span>`,
         ].join("<br>");
         // Highlight winning bot's cards with red glow
         view.highlightWinningCards(bestBotResult.cards, slotRefs, false, bestBotIndex);
       } else {
         // Tie - return the bet
-        bank += BUY_IN;
+        bank += currentBet;
         updateBankDisplay();
         const playerDesc = handDescriptions.describeHand(playerResult);
         const botDesc = handDescriptions.describeHand(bestBotResult);
@@ -228,7 +235,7 @@
       view.renderBotSlots(slotRefs.bot, botHands, { revealed: botRevealed, showPlaceholders: false, botRows: slotRefs.botRows });
       updateDeckLabel();
       const suffix = botCount > 1 ? "bots" : "bot";
-      statusLabel.textContent = `Playing against ${botCount} ${suffix}. Click See Flop - 10 Coin Bet to continue.`;
+      statusLabel.textContent = `Playing against ${botCount} ${suffix}. Adjust your bet and click See Flop to continue.`;
     }
 
     function dealInitial() {
@@ -244,12 +251,25 @@
       view.renderPlayerSlots(slotRefs.player, playerCards, { showPlaceholders: false, revealed: false });
       view.renderBotSlots(slotRefs.bot, botHands, { revealed: botRevealed, showPlaceholders: false, botRows: slotRefs.botRows });
       statusLabel.textContent =
-        "Cards dealt. Choose 1-5 bot opponents, then click See Flop - 10 Coin Bet.";
+        "Cards dealt. Choose bots, set your bet, then click See Flop.";
       flopButton.classList.remove("hidden");
       revealButton.classList.add("hidden");
       botCountSlider.disabled = false;
       if (botCountControl) {
         botCountControl.classList.remove("hidden");
+      }
+      // Show bet control and enable it
+      if (betControl) {
+        betControl.classList.remove("hidden");
+      }
+      if (betInput) {
+        betInput.disabled = false;
+      }
+      if (betDecrementBtn) {
+        betDecrementBtn.disabled = false;
+      }
+      if (betIncrementBtn) {
+        betIncrementBtn.disabled = false;
       }
       if (botRows) {
         botRows.classList.remove("hidden");
@@ -264,6 +284,7 @@
       }
       phaseIndex = 1;
       updateDeckLabel();
+      updateFlopButtonText();
     }
 
     function dealTurn() {
@@ -307,6 +328,25 @@
       botCountSlider.classList.remove("locked");
       if (botCountControl) {
         botCountControl.classList.add("hidden");
+      }
+      // Hide bet control on reset
+      if (betControl) {
+        betControl.classList.add("hidden");
+      }
+      // Ensure currentBet doesn't exceed current bank (but keep it if valid)
+      if (currentBet > bank) {
+        currentBet = Math.max(MIN_BET, bank);
+      }
+      // Update bet input to show current bet
+      if (betInput) {
+        betInput.value = String(currentBet);
+        betInput.disabled = true;
+      }
+      if (betDecrementBtn) {
+        betDecrementBtn.disabled = true;
+      }
+      if (betIncrementBtn) {
+        betIncrementBtn.disabled = true;
       }
       if (botRows) {
         botRows.classList.add("hidden");
@@ -360,6 +400,9 @@
       updateBankDisplay();
       flopButton.classList.add("hidden");
       revealButton.classList.add("hidden");
+      if (playAgainButton) {
+        playAgainButton.classList.add("hidden");
+      }
       view.updateDiscardableStyles(slotRefs.player, playerCards, false);
     }
 
@@ -391,12 +434,12 @@
       if (botHands.length !== botCount) {
         setBotCount(botCount);
       }
-      if (bank < BUY_IN) {
-        statusLabel.textContent = "Not enough coins for the 10 coin bet. Reset to start over.";
+      if (bank < currentBet) {
+        statusLabel.textContent = `Not enough coins for ${currentBet} coin bet. Lower your bet or reset.`;
         flopButton.disabled = true;
         return;
       }
-      bank = Math.max(0, bank - BUY_IN);
+      bank = Math.max(0, bank - currentBet);
       updateBankDisplay();
       const cards = deckUtils.drawCards(deck, 3);
       flopCards = cards;
@@ -413,6 +456,19 @@
       if (botCountControl) {
         botCountControl.classList.add("hidden");
       }
+      // Hide and disable bet control after flop is seen
+      if (betControl) {
+        betControl.classList.add("hidden");
+      }
+      if (betInput) {
+        betInput.disabled = true;
+      }
+      if (betDecrementBtn) {
+        betDecrementBtn.disabled = true;
+      }
+      if (betIncrementBtn) {
+        betIncrementBtn.disabled = true;
+      }
       phaseIndex = 2; // next discard auto-deals Turn
       updateDeckLabel();
     }
@@ -425,6 +481,42 @@
       revealButton.classList.add("hidden");
       botReveal();
       showFinalHand();
+      // Show Play Again button after revealing
+      if (playAgainButton) {
+        playAgainButton.classList.remove("hidden");
+      }
+    }
+
+    function handlePlayAgain() {
+      // Hide play again button
+      if (playAgainButton) {
+        playAgainButton.classList.add("hidden");
+      }
+      // Reset game state but preserve bet
+      baseReset();
+      // Immediately deal cards (skip start screen)
+      dealInitial();
+    }
+
+    function setBet(amount) {
+      const parsed = Number(amount);
+      if (Number.isNaN(parsed)) return;
+      // Clamp bet between MIN_BET and current bank
+      const clamped = Math.max(MIN_BET, Math.min(bank, parsed));
+      currentBet = clamped;
+      // Update the input to show the clamped value
+      if (betInput) {
+        betInput.value = String(clamped);
+      }
+      updateFlopButtonText();
+    }
+
+    function getBet() {
+      return currentBet;
+    }
+
+    function getBank() {
+      return bank;
     }
 
     return {
@@ -433,7 +525,11 @@
       handleSeeFlop,
       handleRevealBot,
       handlePlayerDiscard,
+      handlePlayAgain,
       setBotCount,
+      setBet,
+      getBet,
+      getBank,
     };
   }
 

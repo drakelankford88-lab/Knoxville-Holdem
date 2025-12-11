@@ -1,19 +1,29 @@
 // Event wiring between DOM and game state.
 (() => {
+  const MIN_BET = 10;
+
   function bind(game, refs, statusUI) {
     if (!game || !refs || !statusUI) return;
 
-    const { startButton, flopButton, revealButton, resetButton, botCountSlider, botSliderTooltip, slotRefs } = refs;
+    const { startButton, tutorialButton, flopButton, revealButton, resetButton, playAgainButton, botCountSlider, botSliderTooltip, betInput, betDecrementBtn, betIncrementBtn, slotRefs } = refs;
 
     function goToStartScreen() {
       game.baseReset();
       statusUI.showStart(refs);
       statusUI.setStatus(refs, "Click Deal Cards to begin.");
+      // Show tutorial button on start screen
+      if (tutorialButton) {
+        tutorialButton.classList.remove("hidden");
+      }
     }
 
     function startGame() {
       game.baseReset();
       statusUI.showPlaying(refs);
+      // Hide tutorial button after first deal
+      if (tutorialButton) {
+        tutorialButton.classList.add("hidden");
+      }
       game.dealNextPhase();
     }
 
@@ -99,8 +109,48 @@
       updateTickMarks(Number(botCountSlider.value));
     }
 
+    // Bet control event handling
+    if (betInput) {
+      // Only validate and apply bet on blur (when user clicks away or presses enter)
+      // This allows user to clear the field and type a new number
+      betInput.addEventListener("blur", () => {
+        const parsed = Number(betInput.value);
+        // If empty or invalid or below minimum, reset to minimum
+        if (betInput.value === "" || Number.isNaN(parsed) || parsed < MIN_BET) {
+          game.setBet(MIN_BET);
+        } else {
+          game.setBet(parsed);
+        }
+      });
+
+      // Handle Enter key to apply the bet
+      betInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          betInput.blur(); // Trigger blur validation
+        }
+      });
+    }
+
+    if (betDecrementBtn) {
+      betDecrementBtn.addEventListener("click", () => {
+        const currentBet = game.getBet();
+        const newBet = Math.max(MIN_BET, currentBet - 5);
+        game.setBet(newBet);
+      });
+    }
+
+    if (betIncrementBtn) {
+      betIncrementBtn.addEventListener("click", () => {
+        const currentBet = game.getBet();
+        const currentBank = game.getBank();
+        const newBet = Math.min(currentBank, currentBet + 5);
+        game.setBet(newBet);
+      });
+    }
+
     flopButton.addEventListener("click", () => game.handleSeeFlop());
     revealButton.addEventListener("click", () => game.handleRevealBot());
+    playAgainButton.addEventListener("click", () => game.handlePlayAgain());
     resetButton.addEventListener("click", goToStartScreen);
 
     // Initialize UI.

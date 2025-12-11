@@ -10,26 +10,26 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles/main.css?v=14" />
+    <link rel="stylesheet" href="styles/main.css?v=22" />
     <script defer src="src/logic/handEvaluator.js?v=4"></script>
     <script defer src="src/logic/handDescriptions.js?v=1"></script>
     <script defer src="src/game/deck.js?v=1"></script>
-    <script defer src="src/game/gameState.js?v=14"></script>
+    <script defer src="src/game/gameState.js?v=18"></script>
     <script defer src="src/ui/playerView.js?v=6"></script>
     <script defer src="src/game/players/BotPlayer.js?v=3"></script>
-    <script defer src="src/ui/domRefs.js?v=6"></script>
-    <script defer src="src/ui/status.js?v=1"></script>
-    <script defer src="src/ui/bindings.js?v=1"></script>
-    <script defer src="src/app.js?v=7"></script>
+    <script defer src="src/ui/domRefs.js?v=10"></script>
+    <script defer src="src/ui/status.js?v=2"></script>
+    <script defer src="src/ui/bindings.js?v=6"></script>
+    <script defer src="src/app.js?v=10"></script>
   </head>
   <body>
     <div class="layout">
       <div class="poker-app">
+        <button id="reset-button" class="reset-button-top">Reset</button>
         <div class="title">Knoxville Hold'em</div>
         <div class="subtitle">Created by Drake Lankford</div>
         <div class="bank-display" aria-live="polite">
-          <span class="stat wins">Wins: <span id="win-count">0</span></span>
-          <span class="stat losses">Losses: <span id="loss-count">0</span></span>
+          <span class="stat streak">Win Streak: <span id="win-streak">0</span></span>
           <span class="stat bank">Coins: <span id="bank-amount">100</span></span>
         </div>
 
@@ -38,7 +38,6 @@
         <div class="table-shell">
           <div class="table-oval">
             <div class="bot-section">
-              <div class="section-title">Bot Cards</div>
               <div class="bot-rows">
                 <div class="bot-row">
                   <div class="bot-label">Bot 1</div>
@@ -108,7 +107,6 @@
             </div>
 
             <div class="player-section">
-              <div class="section-title">Player Cards</div>
               <div class="slot-row">
                 <div class="card-slot" data-slot="player">--</div>
                 <div class="card-slot" data-slot="player">--</div>
@@ -134,10 +132,20 @@
               </div>
             </div>
           </div>
+          <div class="bet-control hidden" id="bet-control">
+            <span class="bet-label">Bet:</span>
+            <button class="bet-arrow bet-decrement" id="bet-decrement-btn" aria-label="Decrease bet by 5">&#8592;</button>
+            <div class="bet-input-wrapper">
+              <input type="number" id="bet-input" min="10" value="10" />
+              <span class="bet-min-label">Min: 10</span>
+            </div>
+            <button class="bet-arrow bet-increment" id="bet-increment-btn" aria-label="Increase bet by 5">&#8594;</button>
+          </div>
           <button id="start-button" class="start-button">Deal Cards</button>
-          <button id="flop-button" class="hidden">See Flop - 10 Coin Bet</button>
+          <button id="tutorial-button" class="tutorial-button">Play Tutorial</button>
+          <button id="flop-button" class="hidden">See Flop</button>
           <button id="reveal-button" class="hidden">Reveal Bot Hand</button>
-          <button id="reset-button">Reset Table</button>
+          <button id="play-again-button" class="hidden">Play Again</button>
         </div>
 
         <div id="status-label" class="status">Click Deal Cards to begin.</div>
