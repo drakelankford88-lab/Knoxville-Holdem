@@ -9,6 +9,8 @@
 
     function goToStartScreen() {
       game.baseReset();
+      // Reset bet to minimum on full reset
+      game.setBet(MIN_BET);
       statusUI.showStart(refs);
       statusUI.setStatus(refs, "Click Deal Cards to begin.");
       // Show tutorial button on start screen

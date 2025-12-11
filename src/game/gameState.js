@@ -247,8 +247,8 @@
         botHands.push(deckUtils.drawCards(deck, BOT_HOLE_CARDS));
       }
       botRevealed = false;
-      playerRevealed = false;
-      view.renderPlayerSlots(slotRefs.player, playerCards, { showPlaceholders: false, revealed: false });
+      playerRevealed = true;
+      view.renderPlayerSlots(slotRefs.player, playerCards, { showPlaceholders: false, revealed: true });
       view.renderBotSlots(slotRefs.bot, botHands, { revealed: botRevealed, showPlaceholders: false, botRows: slotRefs.botRows });
       statusLabel.textContent =
         "Cards dealt. Choose bots, set your bet, then click See Flop.";
@@ -492,8 +492,29 @@
       if (playAgainButton) {
         playAgainButton.classList.add("hidden");
       }
-      // Reset game state but preserve bet
+      
+      // Save previous settings before reset
+      const prevBotCount = botCount;
+      const prevBet = currentBet;
+      
+      // Reset game state
       baseReset();
+      
+      // Restore bot count from previous game
+      botCount = prevBotCount;
+      botCountSlider.value = String(botCount);
+      
+      // Restore bet, adjusting if player can't afford it
+      if (prevBet <= bank) {
+        currentBet = prevBet;
+      } else {
+        // Set to max they can afford (but at least MIN_BET)
+        currentBet = Math.max(MIN_BET, bank);
+      }
+      if (betInput) {
+        betInput.value = String(currentBet);
+      }
+      
       // Immediately deal cards (skip start screen)
       dealInitial();
     }

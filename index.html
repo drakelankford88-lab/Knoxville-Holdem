@@ -14,12 +14,12 @@
     <script defer src="src/logic/handEvaluator.js?v=4"></script>
     <script defer src="src/logic/handDescriptions.js?v=1"></script>
     <script defer src="src/game/deck.js?v=1"></script>
-    <script defer src="src/game/gameState.js?v=18"></script>
+    <script defer src="src/game/gameState.js?v=20"></script>
     <script defer src="src/ui/playerView.js?v=6"></script>
     <script defer src="src/game/players/BotPlayer.js?v=3"></script>
     <script defer src="src/ui/domRefs.js?v=10"></script>
     <script defer src="src/ui/status.js?v=2"></script>
-    <script defer src="src/ui/bindings.js?v=6"></script>
+    <script defer src="src/ui/bindings.js?v=7"></script>
     <script defer src="src/app.js?v=10"></script>
   </head>
   <body>
@@ -132,6 +132,7 @@
               </div>
             </div>
           </div>
+          <button id="flop-button" class="hidden">See Flop</button>
           <div class="bet-control hidden" id="bet-control">
             <span class="bet-label">Bet:</span>
             <button class="bet-arrow bet-decrement" id="bet-decrement-btn" aria-label="Decrease bet by 5">&#8592;</button>
@@ -143,7 +144,6 @@
           </div>
           <button id="start-button" class="start-button">Deal Cards</button>
           <button id="tutorial-button" class="tutorial-button">Play Tutorial</button>
-          <button id="flop-button" class="hidden">See Flop</button>
           <button id="reveal-button" class="hidden">Reveal Bot Hand</button>
           <button id="play-again-button" class="hidden">Play Again</button>
         </div>
