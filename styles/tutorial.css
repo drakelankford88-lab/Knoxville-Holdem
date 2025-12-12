@@ -1,0 +1,224 @@
+/* Tutorial Bubble Styles */
+.tutorial-bubble {
+  position: fixed;
+  z-index: 10000;
+  max-width: 320px;
+  pointer-events: none;
+  animation: bubbleFadeIn 0.3s ease-out;
+}
+
+.tutorial-bubble.hidden {
+  display: none;
+}
+
+.tutorial-bubble-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #4ecca3;
+  border-radius: 12px;
+  padding: 16px 20px;
+  padding-bottom: 40px; /* Extra space for Next button */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(78, 204, 163, 0.2);
+  position: relative;
+  pointer-events: auto; /* Allow clicks on content (especially Next button) */
+}
+
+.tutorial-bubble-text {
+  color: #e8e8e8;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  display: block;
+}
+
+.tutorial-next-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #4ecca3;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(78, 204, 163, 0.3);
+}
+
+.tutorial-next-button:hover {
+  background: #5fd4ad;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(78, 204, 163, 0.4);
+}
+
+.tutorial-next-button:active {
+  transform: translateY(0);
+}
+
+.tutorial-next-button.hidden {
+  display: none;
+}
+
+/* Arrow styles */
+.tutorial-bubble-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.tutorial-bubble-arrow.arrow-bottom {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #4ecca3;
+}
+
+.tutorial-bubble-arrow.arrow-bottom::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #1a1a2e;
+}
+
+.tutorial-bubble-arrow.arrow-top {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #4ecca3;
+}
+
+.tutorial-bubble-arrow.arrow-top::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #1a1a2e;
+}
+
+.tutorial-bubble-arrow.arrow-left {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid #4ecca3;
+}
+
+.tutorial-bubble-arrow.arrow-left::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: -8px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #1a1a2e;
+}
+
+.tutorial-bubble-arrow.arrow-right {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid #4ecca3;
+}
+
+.tutorial-bubble-arrow.arrow-right::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: -8px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #1a1a2e;
+}
+
+/* Highlight overlay for target elements */
+.tutorial-highlight {
+  position: fixed;
+  z-index: 9998;
+  border: 3px solid #4ecca3;
+  border-radius: 8px;
+  pointer-events: none;
+  animation: highlightPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(78, 204, 163, 0.4),
+              inset 0 0 20px rgba(78, 204, 163, 0.1);
+}
+
+.tutorial-highlight.hidden {
+  display: none;
+}
+
+/* Target element highlight */
+.tutorial-target {
+  position: relative;
+  z-index: 9999;
+}
+
+/* Animations */
+@keyframes bubbleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(78, 204, 163, 0.4),
+                inset 0 0 20px rgba(78, 204, 163, 0.1);
+    border-color: #4ecca3;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(78, 204, 163, 0.6),
+                inset 0 0 30px rgba(78, 204, 163, 0.2);
+    border-color: #6fe8bf;
+  }
+}
+
+/* Play Casual button (end of tutorial) */
+.play-casual-button {
+  background: linear-gradient(145deg, #4ecca3, #38b58a);
+  color: #0a0a0a;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(78, 204, 163, 0.3);
+}
+
+.play-casual-button:hover {
+  background: linear-gradient(145deg, #5fd4ad, #4ecca3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+}
+
+.play-casual-button:active {
+  transform: translateY(0);
+}
+
+.play-casual-button.hidden {
+  display: none;
+}
+

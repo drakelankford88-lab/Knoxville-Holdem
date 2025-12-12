@@ -10,30 +10,59 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles/main.css?v=22" />
+    <link rel="stylesheet" href="styles/main.css?v=27" />
+    <link rel="stylesheet" href="styles/tutorial.css?v=2" />
     <script defer src="src/logic/handEvaluator.js?v=4"></script>
     <script defer src="src/logic/handDescriptions.js?v=1"></script>
     <script defer src="src/game/deck.js?v=1"></script>
-    <script defer src="src/game/gameState.js?v=20"></script>
+    <script defer src="src/game/gameState.js?v=25"></script>
     <script defer src="src/ui/playerView.js?v=6"></script>
     <script defer src="src/game/players/BotPlayer.js?v=3"></script>
-    <script defer src="src/ui/domRefs.js?v=10"></script>
-    <script defer src="src/ui/status.js?v=2"></script>
-    <script defer src="src/ui/bindings.js?v=7"></script>
-    <script defer src="src/app.js?v=10"></script>
+    <script defer src="src/modes/tutorialMode.js?v=5"></script>
+    <script defer src="src/modes/tutorialSteps.js?v=3"></script>
+    <script defer src="src/modes/casualMode.js?v=1"></script>
+    <script defer src="src/modes/casinoMode.js?v=1"></script>
+    <script defer src="src/ui/tutorialBubble.js?v=2"></script>
+    <script defer src="src/ui/domRefs.js?v=16"></script>
+    <script defer src="src/ui/status.js?v=3"></script>
+    <script defer src="src/ui/bindings.js?v=15"></script>
+    <script defer src="src/app.js?v=13"></script>
   </head>
   <body>
     <div class="layout">
       <div class="poker-app">
-        <button id="reset-button" class="reset-button-top">Reset</button>
-        <div class="title">Knoxville Hold'em</div>
-        <div class="subtitle">Created by Drake Lankford</div>
+        <!-- Start Screen -->
+        <div id="start-screen" class="start-screen">
+          <div class="start-screen-title">Knoxville Hold'em</div>
+          <div class="start-screen-subtitle">Created by Drake Lankford</div>
+          <div class="start-screen-buttons">
+            <button id="mode-tutorial" class="mode-button mode-tutorial">
+              <span class="mode-label">Play Tutorial</span>
+              <span class="mode-subtitle">Learn to Play</span>
+            </button>
+            <button id="mode-casual" class="mode-button mode-casual">
+              <span class="mode-label">Casual</span>
+              <span class="mode-subtitle">Standard Mode</span>
+            </button>
+            <button id="mode-casino" class="mode-button mode-casino">
+              <span class="mode-label">Casino</span>
+              <span class="mode-coming-soon">Coming Soon</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen hidden">
+          <button id="reset-button" class="reset-button-top">Reset</button>
+          <button id="main-menu-button" class="main-menu-button-top">Menu</button>
+          <div class="title">Knoxville Hold'em</div>
+          <div class="subtitle">Created by Drake Lankford</div>
         <div class="bank-display" aria-live="polite">
-          <span class="stat streak">Win Streak: <span id="win-streak">0</span></span>
+          <span class="stat streak" id="streak-display">Win Streak: <span id="win-streak">0</span></span>
           <span class="stat bank">Coins: <span id="bank-amount">100</span></span>
         </div>
 
-        <div id="deck-label" class="deck-label">Deck: 52 cards</div>
+        <div id="deck-label" class="deck-label hidden">Deck: 52 cards</div>
 
         <div class="table-shell">
           <div class="table-oval">
@@ -135,20 +164,21 @@
           <button id="flop-button" class="hidden">See Flop</button>
           <div class="bet-control hidden" id="bet-control">
             <span class="bet-label">Bet:</span>
-            <button class="bet-arrow bet-decrement" id="bet-decrement-btn" aria-label="Decrease bet by 5">&#8592;</button>
+            <button class="bet-arrow bet-decrement" id="bet-decrement-btn" aria-label="Decrease bet by 10">&#8592;</button>
             <div class="bet-input-wrapper">
               <input type="number" id="bet-input" min="10" value="10" />
               <span class="bet-min-label">Min: 10</span>
             </div>
-            <button class="bet-arrow bet-increment" id="bet-increment-btn" aria-label="Increase bet by 5">&#8594;</button>
+            <button class="bet-arrow bet-increment" id="bet-increment-btn" aria-label="Increase bet by 10">&#8594;</button>
           </div>
           <button id="start-button" class="start-button">Deal Cards</button>
-          <button id="tutorial-button" class="tutorial-button">Play Tutorial</button>
           <button id="reveal-button" class="hidden">Reveal Bot Hand</button>
           <button id="play-again-button" class="hidden">Play Again</button>
+          <button id="play-casual-button" class="play-casual-button hidden">Play Casual</button>
         </div>
 
         <div id="status-label" class="status">Click Deal Cards to begin.</div>
+        </div>
       </div>
     </div>
   </body>

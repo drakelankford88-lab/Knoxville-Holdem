@@ -11,12 +11,15 @@
       flopButton,
       revealButton,
       playAgainButton,
+      playCasualButton,
       botCountSlider,
       botCountControl,
       botSection,
       botRows,
       bankAmount,
       winStreak,
+      streakDisplay,
+      bankDisplay,
       betInput,
       betDecrementBtn,
       betIncrementBtn,
@@ -64,12 +67,31 @@
     let flopCards = [];
     let turnCard = null;
     let riverCard = null;
-    let bank = START_BANK;
-    let streak = 0;
     let flopUsed = false;
     let botCount = DEFAULT_BOT_COUNT;
     let botSelectionLocked = false;
-    let currentBet = MIN_BET; // Persists between games
+    let currentMode = "casual"; // "casual" or "tutorial"
+    
+    // Separate state for each mode (both work the same, just independent)
+    const modeState = {
+      casual: {
+        bank: START_BANK,
+        streak: 0,
+        currentBet: MIN_BET,
+        botCount: DEFAULT_BOT_COUNT,
+      },
+      tutorial: {
+        bank: START_BANK,
+        streak: 0,
+        currentBet: MIN_BET,
+        botCount: DEFAULT_BOT_COUNT,
+      }
+    };
+    
+    // Current active state (points to mode-specific state)
+    let bank = modeState.casual.bank;
+    let streak = modeState.casual.streak;
+    let currentBet = modeState.casual.currentBet;
 
     function updateDeckLabel() {
       deckLabel.textContent = `Deck: ${deck.length} cards`;
@@ -110,6 +132,9 @@
       view.renderBotSlots(slotRefs.bot, botHands, { revealed: botRevealed, botRows: slotRefs.botRows });
     }
 
+    // Store last result for tutorial
+    let lastResult = null;
+
     function showFinalHand() {
       if (!window.HandEvaluator) {
         statusLabel.textContent = "Final discard complete. Hand ready.";
@@ -143,58 +168,67 @@
       }
 
       const cmp = window.HandEvaluator.compareHands(playerResult, bestBotResult);
-      let verdict = "It's a tie.";
+      const playerDesc = handDescriptions.describeHand(playerResult);
+      const botDesc = handDescriptions.describeHand(bestBotResult);
+      
+      // Both modes use the same betting logic
       let verdictLabel = "TIE";
       const multiplier = getMultiplier(botCount);
-      // Apply rounding: .5+ rounds up, .4- rounds down (Math.round handles this)
       const winnings = Math.round(currentBet * multiplier);
+      
+      // Determine win/loss/tie
+      let won = null; // null = tie
+      if (cmp > 0) won = true;
+      else if (cmp < 0) won = false;
+      
+      // Store result for tutorial
+      lastResult = {
+        won,
+        handName: playerDesc,
+        bet: currentBet,
+        multiplier,
+        winnings: won ? winnings : 0,
+      };
       
       if (cmp > 0) {
         const profit = winnings - currentBet;
-        verdict = "You win.";
         verdictLabel = "YOU WIN";
-        bank += winnings; // Return bet plus profit (already paid currentBet earlier)
+        bank += winnings;
         streak += 1;
         updateBankDisplay();
-        const playerDesc = handDescriptions.describeHand(playerResult);
-        const botDesc = handDescriptions.describeHand(bestBotResult);
         statusLabel.innerHTML = [
           `<span class="verdict">${verdictLabel}</span>`,
           `You: ${playerDesc}.`,
           `Best Bot: ${botDesc}.`,
           `<span class="winnings">+${profit} coins (${multiplier}x)</span>`,
         ].join("<br>");
-        // Highlight winning cards with green glow
         view.highlightWinningCards(playerResult.cards, slotRefs, true);
       } else if (cmp < 0) {
         const botName = `Bot ${bestBotIndex + 1}`;
-        verdict = `${botName} wins.`;
         verdictLabel = `${botName.toUpperCase()} WINS`;
-        streak = 0; // Reset win streak on loss
+        streak = 0;
         updateBankDisplay();
-        const playerDesc = handDescriptions.describeHand(playerResult);
-        const botDesc = handDescriptions.describeHand(bestBotResult);
         statusLabel.innerHTML = [
           `<span class="verdict">${verdictLabel}</span>`,
           `You: ${playerDesc}.`,
           `Best Bot: ${botDesc}.`,
           `<span class="loss">-${currentBet} coins</span>`,
         ].join("<br>");
-        // Highlight winning bot's cards with red glow
         view.highlightWinningCards(bestBotResult.cards, slotRefs, false, bestBotIndex);
       } else {
-        // Tie - return the bet
         bank += currentBet;
         updateBankDisplay();
-        const playerDesc = handDescriptions.describeHand(playerResult);
-        const botDesc = handDescriptions.describeHand(bestBotResult);
         statusLabel.innerHTML = [
           `<span class="verdict">${verdictLabel}</span>`,
           `You: ${playerDesc}.`,
           `Best Bot: ${botDesc}.`,
           `<span class="tie">Bet returned</span>`,
         ].join("<br>");
-        // No highlights for ties
+      }
+      
+      // Notify tutorial of round end
+      if (currentMode === 'tutorial' && window.TutorialMode) {
+        window.TutorialMode.handleRoundEnd(lastResult);
       }
     }
 
@@ -238,6 +272,13 @@
       statusLabel.textContent = `Playing against ${botCount} ${suffix}. Adjust your bet and click See Flop to continue.`;
     }
 
+    // Emit tutorial event
+    function emitTutorialEvent(eventType, data = {}) {
+      if (currentMode === 'tutorial' && window.TutorialMode) {
+        window.TutorialMode.handleEvent(eventType, data);
+      }
+    }
+
     function dealInitial() {
       if (phaseIndex !== 0) return;
       const cards = deckUtils.drawCards(deck, 5);
@@ -250,27 +291,49 @@
       playerRevealed = true;
       view.renderPlayerSlots(slotRefs.player, playerCards, { showPlaceholders: false, revealed: true });
       view.renderBotSlots(slotRefs.bot, botHands, { revealed: botRevealed, showPlaceholders: false, botRows: slotRefs.botRows });
-      statusLabel.textContent =
-        "Cards dealt. Choose bots, set your bet, then click See Flop.";
+      
       flopButton.classList.remove("hidden");
       revealButton.classList.add("hidden");
-      botCountSlider.disabled = false;
-      if (botCountControl) {
-        botCountControl.classList.remove("hidden");
+      
+      // Check if tutorial mode and get current stage settings
+      const inTutorial = currentMode === 'tutorial' && window.TutorialMode;
+      const tutorialConfig = inTutorial ? window.TutorialMode.getConfig() : null;
+      
+      // Show/hide controls based on tutorial stage
+      if (inTutorial && !tutorialConfig.showBotSlider) {
+        // Stage 1: Hide bot slider
+        if (botCountControl) {
+          botCountControl.classList.add("hidden");
+        }
+        botCountSlider.disabled = true;
+      } else {
+        // Casual mode or Tutorial Stage 2: Show bot slider
+        botCountSlider.disabled = false;
+        if (botCountControl) {
+          botCountControl.classList.remove("hidden");
+        }
       }
-      // Show bet control and enable it
-      if (betControl) {
-        betControl.classList.remove("hidden");
+      
+      if (inTutorial && !tutorialConfig.showBetControls) {
+        // Stage 1: Hide bet controls
+        if (betControl) {
+          betControl.classList.add("hidden");
+        }
+        if (betInput) betInput.disabled = true;
+        if (betDecrementBtn) betDecrementBtn.disabled = true;
+        if (betIncrementBtn) betIncrementBtn.disabled = true;
+        statusLabel.textContent = "Cards dealt. Click See Flop to reveal the community cards.";
+      } else {
+        // Casual mode or Tutorial Stage 2: Show bet controls
+        if (betControl) {
+          betControl.classList.remove("hidden");
+        }
+        if (betInput) betInput.disabled = false;
+        if (betDecrementBtn) betDecrementBtn.disabled = false;
+        if (betIncrementBtn) betIncrementBtn.disabled = false;
+        statusLabel.textContent = "Cards dealt. Choose bots, set your bet, then click See Flop.";
       }
-      if (betInput) {
-        betInput.disabled = false;
-      }
-      if (betDecrementBtn) {
-        betDecrementBtn.disabled = false;
-      }
-      if (betIncrementBtn) {
-        betIncrementBtn.disabled = false;
-      }
+      
       if (botRows) {
         botRows.classList.remove("hidden");
         // Remove placeholder when showing real bot rows
@@ -285,6 +348,9 @@
       phaseIndex = 1;
       updateDeckLabel();
       updateFlopButtonText();
+      
+      // Emit tutorial event after cards are dealt
+      emitTutorialEvent('cards-dealt');
     }
 
     function dealTurn() {
@@ -413,6 +479,9 @@
       view.renderPlayerSlots(slotRefs.player, playerCards, { showPlaceholders: false, revealed: playerRevealed });
       discardRequired = false;
       view.updateDiscardableStyles(slotRefs.player, playerCards, false);
+      
+      // Emit tutorial event for discard
+      emitTutorialEvent('card-discarded');
 
       if (phaseIndex === 2) {
         dealTurn();
@@ -434,6 +503,7 @@
       if (botHands.length !== botCount) {
         setBotCount(botCount);
       }
+      // Deduct bet in both modes
       if (bank < currentBet) {
         statusLabel.textContent = `Not enough coins for ${currentBet} coin bet. Lower your bet or reset.`;
         flopButton.disabled = true;
@@ -481,8 +551,19 @@
       revealButton.classList.add("hidden");
       botReveal();
       showFinalHand();
-      // Show Play Again button after revealing
-      if (playAgainButton) {
+      
+      // Check if tutorial is at final step
+      const inTutorial = currentMode === 'tutorial' && window.TutorialMode;
+      const isAtFinal = inTutorial && window.TutorialMode.isAtFinalStep();
+      
+      if (isAtFinal && playCasualButton) {
+        // Show Play Casual button instead of Play Again
+        playCasualButton.classList.remove("hidden");
+        if (playAgainButton) {
+          playAgainButton.classList.add("hidden");
+        }
+      } else if (playAgainButton) {
+        // Show Play Again button after revealing
         playAgainButton.classList.remove("hidden");
       }
     }
@@ -540,6 +621,59 @@
       return bank;
     }
 
+    function setMode(mode) {
+      // Save current mode state before switching
+      modeState[currentMode].bank = bank;
+      modeState[currentMode].streak = streak;
+      modeState[currentMode].currentBet = currentBet;
+      modeState[currentMode].botCount = botCount;
+      
+      // Switch to new mode
+      currentMode = mode;
+      
+      // Load new mode state
+      bank = modeState[mode].bank;
+      streak = modeState[mode].streak;
+      currentBet = modeState[mode].currentBet;
+      botCount = modeState[mode].botCount;
+      
+      // Update UI
+      botCountSlider.value = String(botCount);
+      if (betInput) {
+        betInput.value = String(currentBet);
+      }
+      
+      // Always show bank display (both modes use coins)
+      if (bankDisplay) {
+        bankDisplay.classList.remove("hidden");
+      }
+      
+      // Hide win streak in tutorial mode
+      if (streakDisplay) {
+        if (mode === "tutorial") {
+          streakDisplay.classList.add("hidden");
+        } else {
+          streakDisplay.classList.remove("hidden");
+        }
+      }
+      
+      updateBankDisplay();
+    }
+
+    function getMode() {
+      return currentMode;
+    }
+
+    function getLastResult() {
+      return lastResult;
+    }
+
+    function showTutorialStep() {
+      if (currentMode === 'tutorial' && window.TutorialMode) {
+        window.TutorialMode.showCurrentStep();
+      }
+    }
+
     return {
       baseReset,
       dealNextPhase: dealInitial, // start button uses this
@@ -551,6 +685,11 @@
       setBet,
       getBet,
       getBank,
+      setMode,
+      getMode,
+      getLastResult,
+      showTutorialStep,
+      emitTutorialEvent,
     };
   }
 

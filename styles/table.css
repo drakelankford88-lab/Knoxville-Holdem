@@ -23,7 +23,7 @@
 
 .table-shell {
   position: relative;
-  margin: 20px 0;
+  margin: 50px 0 20px 0;
   padding: 28px;
   border-radius: 32px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.8));

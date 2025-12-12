@@ -23,9 +23,14 @@
     }
   }
 
-  function showPlaying(refs) {
+  function showPlaying(refs, mode = "casual") {
     refs.startButton.classList.add("hidden");
-    refs.resetButton.classList.remove("hidden");
+    // Show reset button only in casual mode, hide in tutorial
+    if (mode === "casual") {
+      refs.resetButton.classList.remove("hidden");
+    } else {
+      refs.resetButton.classList.add("hidden");
+    }
     refs.flopButton.classList.add("hidden");
     refs.revealButton.classList.add("hidden");
     if (refs.botCountControl) {
