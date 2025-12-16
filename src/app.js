@@ -1,5 +1,7 @@
 // Bootstrap the game on DOMContentLoaded.
+console.log("App.js loading...");
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOMContentLoaded fired");
   const view = window.PlayerView;
   const deckUtils = window.Deck;
   const handDescriptions = window.HandDescriptions;

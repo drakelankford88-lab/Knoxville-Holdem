@@ -10,12 +10,26 @@
 
     const { startButton, flopButton, revealButton, resetButton, mainMenuButton, playAgainButton, playCasualButton, botCountSlider, botSliderTooltip, betInput, betDecrementBtn, betIncrementBtn, slotRefs, startScreen, gameScreen, modeCasualButton, modeTutorialButton, betControl, botCountControl } = refs;
 
+    // Update decrement button disabled state based on current bet
+    function updateBetButtons() {
+      const currentBet = game.getBet();
+      if (betDecrementBtn) {
+        betDecrementBtn.disabled = currentBet <= MIN_BET;
+      }
+    }
+
     function goToStartScreen() {
       game.baseReset();
       // Reset bet to minimum on full reset (only matters for casual mode)
       if (currentMode === "casual") {
         game.setBet(MIN_BET);
       }
+      // Show multiplier label again
+      const multiplierLabel = document.getElementById("multiplier-label");
+      if (multiplierLabel) {
+        multiplierLabel.classList.remove("hidden");
+      }
+      updateBetButtons();
       statusUI.showStart(refs);
       statusUI.setStatus(refs, "Click Deal Cards to begin.");
     }
@@ -200,6 +214,8 @@
     
     // Slider event handling
     if (botCountSlider) {
+      const multiplierLabel = document.getElementById("multiplier-label");
+      
       // Real-time updates while dragging
       botCountSlider.addEventListener("input", () => {
         const parsed = Number(botCountSlider.value);
@@ -209,11 +225,14 @@
         game.setBotCount(parsed);
       });
 
-      // Show tooltip on interaction start
+      // Show tooltip and hide multiplier label on interaction start
       botCountSlider.addEventListener("mousedown", () => {
         if (botSliderTooltip) {
           updateTooltipPosition();
           botSliderTooltip.classList.add("visible");
+        }
+        if (multiplierLabel) {
+          multiplierLabel.classList.add("hidden");
         }
       });
 
@@ -222,18 +241,27 @@
           updateTooltipPosition();
           botSliderTooltip.classList.add("visible");
         }
+        if (multiplierLabel) {
+          multiplierLabel.classList.add("hidden");
+        }
       });
 
-      // Hide tooltip when interaction ends
+      // Hide tooltip and show multiplier label when interaction ends
       document.addEventListener("mouseup", () => {
         if (botSliderTooltip) {
           botSliderTooltip.classList.remove("visible");
+        }
+        if (multiplierLabel) {
+          multiplierLabel.classList.remove("hidden");
         }
       });
 
       document.addEventListener("touchend", () => {
         if (botSliderTooltip) {
           botSliderTooltip.classList.remove("visible");
+        }
+        if (multiplierLabel) {
+          multiplierLabel.classList.remove("hidden");
         }
       });
 
@@ -253,6 +281,7 @@
         } else {
           game.setBet(parsed);
         }
+        updateBetButtons();
       });
 
       // Handle Enter key to apply the bet
@@ -267,7 +296,11 @@
       betDecrementBtn.addEventListener("click", () => {
         const currentBet = game.getBet();
         const newBet = Math.max(MIN_BET, currentBet - 10);
+        if (newBet !== currentBet && window.GameSounds) {
+          window.GameSounds.playClick();
+        }
         game.setBet(newBet);
+        updateBetButtons();
         // Emit bet-changed event for tutorial
         if (currentMode === 'tutorial') {
           game.emitTutorialEvent('bet-changed');
@@ -280,13 +313,20 @@
         const currentBet = game.getBet();
         const currentBank = game.getBank();
         const newBet = Math.min(currentBank, currentBet + 10);
+        if (newBet !== currentBet && window.GameSounds) {
+          window.GameSounds.playCardDeal();
+        }
         game.setBet(newBet);
+        updateBetButtons();
         // Emit bet-changed event for tutorial
         if (currentMode === 'tutorial') {
           game.emitTutorialEvent('bet-changed');
         }
       });
     }
+
+    // Initialize bet button state
+    updateBetButtons();
 
     flopButton.addEventListener("click", () => game.handleSeeFlop());
     revealButton.addEventListener("click", () => game.handleRevealBot());
@@ -326,10 +366,22 @@
     
     // Mode selection buttons
     if (modeCasualButton) {
-      modeCasualButton.addEventListener("click", startCasualMode);
+      console.log("Adding click listener to Casual button");
+      modeCasualButton.addEventListener("click", () => {
+        console.log("Casual button clicked!");
+        startCasualMode();
+      });
+    } else {
+      console.log("modeCasualButton not found!");
     }
     if (modeTutorialButton) {
-      modeTutorialButton.addEventListener("click", startTutorialMode);
+      console.log("Adding click listener to Tutorial button");
+      modeTutorialButton.addEventListener("click", () => {
+        console.log("Tutorial button clicked!");
+        startTutorialMode();
+      });
+    } else {
+      console.log("modeTutorialButton not found!");
     }
 
     // Initialize UI - show mode select screen

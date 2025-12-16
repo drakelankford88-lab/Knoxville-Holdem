@@ -189,6 +189,26 @@
   letter-spacing: 0.3px;
 }
 
+/* Multiplier Label - disappears when slider is used */
+.multiplier-label {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.multiplier-label.hidden {
+  opacity: 0;
+}
+
 /* Bot Slider Container */
 .bot-slider-container {
   position: relative;
@@ -353,16 +373,32 @@
 
 /* Bet Control */
 .bet-control {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 4px 14px 8px;
+  padding-top: 32px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text);
   flex: 0 0 auto;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.bet-amount-label {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .bet-label {

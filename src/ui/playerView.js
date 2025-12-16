@@ -59,17 +59,50 @@
   }
 
   function renderPlayerSlots(slots, cards, options = {}) {
-    const { revealed = true } = options;
-    renderSlots(slots, cards, { ...options, revealed });
+    const { revealed = true, animate = false } = options;
+    renderSlots(slots, cards, { ...options, revealed, animate });
   }
 
   function renderBotSlots(slots, cards, options = {}) {
-    const { botRows } = options;
+    const { botRows, animate = false, revealed = false, animateReveal = false } = options;
     const hands = Array.isArray(cards) ? cards : [];
+    let revealSoundPlayed = false;
     slots.forEach((seatSlots, idx) => {
       const hand = hands[idx] || [];
       const isActiveSeat = idx < hands.length;
-      renderSlots(seatSlots, isActiveSeat ? hand : [], { ...options, showPlaceholders: false });
+      // Add extra delay for bot cards so they deal after player cards
+      const botDelay = animate ? 450 + (idx * 150) : 0;
+      
+      if (animate && isActiveSeat) {
+        setTimeout(() => {
+          renderSlots(seatSlots, hand, { ...options, showPlaceholders: false, animate: true });
+        }, botDelay);
+      } else if (animateReveal && revealed && isActiveSeat) {
+        // Flip animation for bot reveal - hide cards first to prevent flash
+        seatSlots.forEach(slot => {
+          slot.style.opacity = "0";
+        });
+        renderSlots(seatSlots, hand, { ...options, showPlaceholders: false, animate: false });
+        // Apply revealing animation to all cards simultaneously
+        setTimeout(() => {
+          seatSlots.forEach(slot => {
+            if (slot.classList.contains("has-card")) {
+              slot.style.opacity = "";
+              slot.classList.add("revealing");
+              // Play sound once when bot cards flip
+              if (!revealSoundPlayed && window.GameSounds) {
+                window.GameSounds.playCardFlip();
+                revealSoundPlayed = true;
+              }
+              setTimeout(() => {
+                slot.classList.remove("revealing");
+              }, 600);
+            }
+          });
+        }, 0);
+      } else {
+        renderSlots(seatSlots, isActiveSeat ? hand : [], { ...options, showPlaceholders: false, animate: false });
+      }
       
       // Hide/show the entire bot row based on whether it's active
       if (botRows && botRows[idx]) {
@@ -88,6 +121,7 @@
       showBacksWhenEmpty = false,
       revealed = false,
       addPrestartClass = false,
+      animate = false,
     } = options;
     const totalSlots = slots.length;
     const padLeft = Math.max(0, Math.floor((totalSlots - cards.length) / 2));
@@ -99,6 +133,7 @@
 
     let cardIdxCounter = 0;
     const activeSlots = [];
+    let animatedCardIndex = 0;
 
     paddedCards.forEach((card, idx) => {
       const slot = slots[idx];
@@ -106,7 +141,7 @@
 
       slot.dataset.cardIndex = "";
       delete slot.dataset.cardCode; // Clear card code when re-rendering
-      slot.classList.remove("face-down");
+      slot.classList.remove("face-down", "dealing", "discarding", "revealing");
       if (addPrestartClass) {
         slot.classList.add("prestart");
       } else {
@@ -141,6 +176,26 @@
           slot.style.backgroundImage = "";
           slot.classList.remove("empty");
         }
+        
+        // Add staggered deal animation
+        if (animate && card) {
+          const delay = animatedCardIndex * 80; // 80ms stagger between cards
+          slot.style.opacity = "0";
+          setTimeout(() => {
+            slot.style.opacity = "";
+            slot.classList.add("dealing");
+            // Play card deal sound for each card
+            if (window.GameSounds) {
+              window.GameSounds.playCardDeal();
+            }
+            // Remove animation class after it completes
+            setTimeout(() => {
+              slot.classList.remove("dealing");
+            }, 350);
+          }, delay);
+          animatedCardIndex++;
+        }
+        
         activeSlots.push(slot);
         return;
       }
@@ -254,6 +309,54 @@
     slotRefs.river.forEach(clearSlot);
   }
 
+  /**
+   * Animate a card being discarded, then call the callback.
+   * @param {HTMLElement} slot - The card slot element to animate
+   * @param {Function} onComplete - Callback after animation completes
+   */
+  function animateDiscard(slot, onComplete) {
+    if (!slot) {
+      if (onComplete) onComplete();
+      return;
+    }
+    
+    slot.classList.add("discarding");
+    slot.classList.remove("discardable");
+    
+    // Wait for animation to complete, then call callback
+    setTimeout(() => {
+      slot.classList.remove("discarding");
+      if (onComplete) onComplete();
+    }, 250);
+  }
+
+  /**
+   * Animate community cards being revealed (flop/turn/river).
+   * @param {HTMLElement[]} slots - The card slots to animate
+   * @param {boolean} playSound - Whether to play the flip sound (default false)
+   */
+  function animateCommunityCards(slots, playSound = false) {
+    let soundPlayed = false;
+    slots.forEach((slot, idx) => {
+      if (slot.classList.contains("has-card")) {
+        slot.style.opacity = "0";
+        // All cards flip at once (no delay)
+        setTimeout(() => {
+          slot.style.opacity = "";
+          slot.classList.add("revealing");
+          // Play sound once when cards flip (only if playSound is true)
+          if (playSound && !soundPlayed && window.GameSounds) {
+            window.GameSounds.playCardFlip();
+            soundPlayed = true;
+          }
+          setTimeout(() => {
+            slot.classList.remove("revealing");
+          }, 600);
+        }, 0);
+      }
+    });
+  }
+
   window.PlayerView = {
     cardCodeToPath,
     setSlotCard,
@@ -262,5 +365,7 @@
     updateDiscardableStyles,
     highlightWinningCards,
     clearHighlights,
+    animateDiscard,
+    animateCommunityCards,
   };
 })();

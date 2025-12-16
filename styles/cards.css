@@ -54,7 +54,8 @@
   background-repeat: no-repeat;
   background-position: center;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
-  transition: transform 140ms ease, box-shadow 160ms ease, border-color 160ms ease, background 200ms ease;
+  transition: transform 140ms ease, box-shadow 160ms ease, border-color 160ms ease, background 200ms ease, opacity 200ms ease;
+  will-change: transform, opacity;
 }
 
 .card-slot.has-card {
